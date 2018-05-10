@@ -1,8 +1,12 @@
+// ProcesLider.cpp : Defines the entry point for the console application.
+//
+
 #include<iostream>
 #include<time.h>
 #include "stdafx.h"
 #include<Windows.h>
 #include<mpi.h>
+#include <stdio.h>
 
 using namespace std;
 
@@ -36,13 +40,12 @@ int main(int argc, char** argv)
 		to_send[1] = maxprio;
 		MPI_Isend(&to_send, 2, MPI_INT, (procid + 1) % size, 0, MPI_COMM_WORLD, &request);
 		MPI_Recv(&to_receive, 2, MPI_INT, (size + procid - 1) % size, 0, MPI_COMM_WORLD, &status);
-		cout << procid << " received " << to_receive[0] << " " << to_receive[1] << " on step " << i << endl;
-		
+		printf("Procid %d  %d on step %d ", to_receive[0], to_receive[1], i);
+
 		if (to_receive[1] > maxprio)
 		{
 			leaderid = to_receive[0];
 			maxprio = to_receive[1];
-
 		}
 		else
 		{
@@ -55,8 +58,7 @@ int main(int argc, char** argv)
 	}
 
 	Sleep(2000);
-	cout << procid << " has the leader " << leaderid << " with priority " << maxprio << endl;
-
+	printf("%d has the leader %d with priority %d", procid, leaderid, maxprio);
 	MPI_Finalize();
 	return 0;
 }
